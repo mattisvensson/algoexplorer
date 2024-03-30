@@ -8,25 +8,13 @@ export default function Overview () {
   const navigation = useContext(NavigationContext);
   const { category } = useParams()
 
+  const items = category ? navigation.find((item) => item.name.toUpperCase() === category.toUpperCase())?.submenu : navigation
+
   return (
     <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-      {navigation.map((item) => {
-        if (category) {
-          if (item.name.toUpperCase() === category?.toUpperCase()) {
-            return (
-              <>
-                {item.submenu?.map((subitem) => (
-                  <OverviewCard key={subitem.name} item={subitem}/>
-                ))}
-              </>
-            )
-          }
-        } else {
-          return (
-            <OverviewCard key={item.name} item={item}/>
-          )
-        }
-      })}
+      {items?.map((item) => (
+        <OverviewCard key={item.name} item={item}/>
+      ))}
     </div>
   )
 }
