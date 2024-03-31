@@ -7,6 +7,7 @@ interface NavigationItem {
 interface SubnavigationItem {
   name: string;
   href: string;
+  description?: string;
 }
 
 type NavigationProps = NavigationItem[];

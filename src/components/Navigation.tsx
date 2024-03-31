@@ -3,12 +3,12 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useEffect, useState, useContext } from 'react'
 import { useLocation, Link } from 'react-router-dom';
 import classNames from '@utils/classNames';
-import { NavigationContext } from "@/App"
+import { AlgorithmContext } from "@/App"
 
 
 export default function Navigation() {
 
-  const navigation = useContext(NavigationContext);
+  const navigation = useContext(AlgorithmContext);
 
   const location = useLocation();
 
