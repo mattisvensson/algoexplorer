@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import { createContext } from 'react'
 import Overview from '@components/Overview'
 import Navigation from '@components/Navigation'
+import Visualizer from '@components/Visualizer'
 import { algorithmInfo } from '@utils/algorithms/algorithmInfo'
 
 
@@ -19,6 +20,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Overview/>}/>
               <Route path="/:category" element={<Overview/>} />
+              <Route path="/:category/:algorithmType" element={<Visualizer/>} />
             </Routes>
           </main>
       </div>

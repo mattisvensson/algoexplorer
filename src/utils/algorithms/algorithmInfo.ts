@@ -12,7 +12,7 @@ export const algorithmInfo =
         {
           name: 'Selection Sort',
           href: 'sorting/selection-sort',
-          description: '',
+          description: 'Selection sort, often dubbed as the "minimal exchange sort," is a straightforward sorting algorithm. It iterates over the input list, selecting the minimum element each time and swapping it with the element at the beginning of the unsorted portion of the list. This process continues until the entire list is sorted. Unlike bubble sort, which moves elements by repeatedly swapping adjacent elements, selection sort directly selects the minimum element and places it in its correct position. The algorithm`s name stems from the systematic selection of the smallest element, akin to plucking cards from a hand and arranging them in ascending order.',
         },
         {
           name: 'Insertion Sort',
