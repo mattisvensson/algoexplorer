@@ -38,24 +38,24 @@ export default function Visualizer() {
   }, [algorithmType])
 
   useEffect(() => {
-    if (!algorithmType || !algorithmArray || isAlgorithmRunning) return
-    sorting(algorithmType, algorithmArray, setAlgorithmArray, isAlgorithmStopped)
+    if (!algorithmType || !algorithmArray || !isAlgorithmRunning) return
+    sorting(algorithmType, algorithmArray, setAlgorithmArray, getIsAlgorithmRunning)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAlgorithmRunning])
 
-  function isAlgorithmStopped() {
+  function getIsAlgorithmRunning() {
     return isAlgorithmRunningRef.current
   }
 
   function toggleAlgorithm(state?: boolean) {
     SetIsAlgorithmRunning(prev => state != undefined ? state : !prev)
-    isAlgorithmRunningRef.current = state ? state != undefined : !isAlgorithmRunningRef.current
+    isAlgorithmRunningRef.current = state != undefined ? state : !isAlgorithmRunningRef.current
   }
 
   function resetAlgorithm() {
-    toggleAlgorithm(false)
     setAlgorithmArray(generateArray())
+    toggleAlgorithm(false)
   }
 
   return (
@@ -69,14 +69,17 @@ export default function Visualizer() {
       </Container>
       <Container>
         <>
-          <h3>Settings</h3>
-          <button onClick={() => toggleAlgorithm()}>{isAlgorithmRunning ? "Play" : "Pause"}</button>
-          <button onClick={() => resetAlgorithm()}>Reset</button>
+          <h3 className='mb-1 font-bold'>Settings</h3>
+          <div className="flex flex-col">
+            <button onClick={() => toggleAlgorithm()}>{isAlgorithmRunning ? "Play" : "Pause"}</button>
+            <button onClick={() => resetAlgorithm()}>Reset</button>
+            {/* <input type="number" min={0} max={10} value='1'/> */}
+          </div>
         </>
       </Container>
       <Container>
         <>
-          <h3>About the algorithm</h3>
+          <h3 className='mb-1 font-bold'>Description</h3>
           {currentAlgorithm?.description && <p>{currentAlgorithm?.description}</p>}
         </>
       </Container>
