@@ -20,8 +20,6 @@ export default function Visualizer() {
   const isAlgorithmRunningRef = useRef(false)
 
   useEffect(() => {
-    isAlgorithmRunningRef.current = true
-    SetIsAlgorithmRunning(true)
     setAlgorithmArray(generateArray())
     
     if (!algorithmType) return
@@ -54,8 +52,8 @@ export default function Visualizer() {
   }
 
   function resetAlgorithm() {
-    setAlgorithmArray(generateArray())
     toggleAlgorithm(false)
+    setAlgorithmArray(generateArray())
   }
 
   return (
@@ -71,7 +69,7 @@ export default function Visualizer() {
         <>
           <h3 className='mb-1 font-bold'>Settings</h3>
           <div className="flex flex-col">
-            <button onClick={() => toggleAlgorithm()}>{isAlgorithmRunning ? "Play" : "Pause"}</button>
+            <button onClick={() => toggleAlgorithm()}>{isAlgorithmRunning ? "Pause" : "Play"}</button>
             <button onClick={() => resetAlgorithm()}>Reset</button>
             {/* <input type="number" min={0} max={10} value='1'/> */}
           </div>
