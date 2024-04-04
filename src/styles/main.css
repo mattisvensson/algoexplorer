@@ -5,3 +5,15 @@
 html, body, #root {
   @apply h-full
 }
+
+button {
+  @apply py-2 px-4 border border-gray-800  rounded-md hover:border-gray-500 text-gray-800 hover:text-gray-500
+}
+
+input {
+  @apply p-2 border border-gray-800 rounded-md;
+
+  &[type="range"] {
+    @apply accent-gray-800
+  }
+}

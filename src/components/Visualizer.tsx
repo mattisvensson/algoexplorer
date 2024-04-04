@@ -75,11 +75,11 @@ export default function Visualizer() {
       <Container>
         <>
           <h3 className='mb-1 font-bold'>Settings</h3>
-          <div className="flex flex-col">
-            <button onClick={() => toggleAlgorithm()}>{isAlgorithmRunning ? "Pause" : "Play"}</button>
+          <div>
+            <button onClick={() => toggleAlgorithm()} className="mr-2">{isAlgorithmRunning ? "Pause" : "Play"}</button>
             <button onClick={() => resetAlgorithm()}>Reset</button>
             {/* <input type="number" min={0} max={10} value='1'/> */}
-            <div>
+            <div className="flex items-center gap-3 mt-4">
               <input type="range" min="10" max="1000" value={arraySize} onChange={e => setArraySize(parseInt(e.target.value))}/>
               <input type="number" min="10" max="1000" value={arraySize} onChange={e => setArraySize(parseInt(e.target.value))}/>
               Size: {arraySize} Elements
