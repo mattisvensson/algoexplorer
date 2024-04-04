@@ -82,7 +82,7 @@ export default function Visualizer() {
             <div className="flex items-center gap-3 mt-4">
               <input type="range" min="10" max="1000" value={arraySize} onChange={e => setArraySize(parseInt(e.target.value))}/>
               <input type="number" min="10" max="1000" value={arraySize} onChange={e => setArraySize(parseInt(e.target.value))}/>
-              Size: {arraySize} Elements
+              <p>Size: {arraySize} Elements</p>
             </div>
           </div>
         </>
