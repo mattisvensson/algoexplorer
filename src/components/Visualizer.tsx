@@ -17,10 +17,11 @@ export default function Visualizer() {
   const [algorithmArray, setAlgorithmArray] = useState<number[]>()
   const [currentAlgorithm, setCurrentAlgorithm] = useState<SubnavigationItem>()
   const [isAlgorithmRunning, SetIsAlgorithmRunning] = useState<boolean>(false)
+  const [arraySize, setArraySize] = useState<number>(50)
   const isAlgorithmRunningRef = useRef(false)
 
   useEffect(() => {
-    setAlgorithmArray(generateArray())
+    setAlgorithmArray(generateArray(arraySize))
     
     if (!algorithmType) return
 
@@ -53,15 +54,21 @@ export default function Visualizer() {
 
   function resetAlgorithm() {
     toggleAlgorithm(false)
-    setAlgorithmArray(generateArray())
+    setAlgorithmArray(generateArray(arraySize))
   }
+
+  useEffect(() => {
+    if (typeof arraySize !== 'number') return
+    toggleAlgorithm(false)
+    setAlgorithmArray(generateArray(arraySize))
+  }, [arraySize])
 
   return (
     <div className="grid grid-cols-2 gap-4 px-4 pb-12 mx-auto max-w-7xl sm:px-6 lg:px-8">
       <Container additionalClasses='col-span-2'>
-        <div className="flex items-end h-[300px] gap-4">
+        <div className="flex items-end h-[300px]">
           {algorithmArray && algorithmArray.map((item) => (
-            <div key={item} style={{ height: item * 2 + '%' }} className="w-[calc(100%_/_8)] bg-black rounded-md"></div>
+            <div key={item} style={{ height: item / 100 * (100 / (algorithmArray.length / 100)) + '%' }} className="w-full bg-gray-800 first:rounded-l last:rounded-r"></div>
           ))}
         </div>
       </Container>
@@ -72,6 +79,11 @@ export default function Visualizer() {
             <button onClick={() => toggleAlgorithm()}>{isAlgorithmRunning ? "Pause" : "Play"}</button>
             <button onClick={() => resetAlgorithm()}>Reset</button>
             {/* <input type="number" min={0} max={10} value='1'/> */}
+            <div>
+              <input type="range" min="10" max="1000" value={arraySize} onChange={e => setArraySize(parseInt(e.target.value))}/>
+              <input type="number" min="10" max="1000" value={arraySize} onChange={e => setArraySize(parseInt(e.target.value))}/>
+              Size: {arraySize} Elements
+            </div>
           </div>
         </>
       </Container>
