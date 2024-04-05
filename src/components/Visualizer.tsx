@@ -4,7 +4,7 @@ import { algorithmInfo } from '@utils/algorithms/algorithmInfo'
 import sorting from '@utils/algorithms/sorting'
 import generateArray from '@/utils/generateArray'
 
-function Container({ additionalClasses, children}: { additionalClasses?: string, children: JSX.Element}) {
+function Container({ additionalClasses, children }: { additionalClasses?: string, children: JSX.Element }) {
   return (
     <div className={`px-5 py-6 bg-white rounded-lg shadow sm:px-6 ${additionalClasses ? additionalClasses : ''}`}>
       {children}
@@ -18,11 +18,13 @@ export default function Visualizer() {
   const [currentAlgorithm, setCurrentAlgorithm] = useState<SubnavigationItem>()
   const [algorithmState, setAlgorithmState] = useState<boolean>(false)
   const [arraySize, setArraySize] = useState<number>(50)
+  const [speedMultiplier, setSpeedMultiplier] = useState<number>(1);
   const algorithmStateRef = useRef(false)
+  const speedMultiplierRef = useRef(1)
 
   useEffect(() => {
     setAlgorithmArray(generateArray(arraySize))
-    
+
     if (!algorithmType) return
 
     algorithmInfo.map((item) => {
@@ -32,20 +34,34 @@ export default function Visualizer() {
         }
       })
     })
-    
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [algorithmType])
 
   useEffect(() => {
     algorithmStateRef.current = algorithmState
     if (!algorithmType || !algorithmArray || !algorithmState) return
-    sorting(algorithmType, algorithmArray, setAlgorithmArray, setAlgorithmState, getAlgorithmState)
+    sorting(algorithmType, algorithmArray, getSpeedMultiplier, setAlgorithmArray, setAlgorithmState, getAlgorithmState)
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [algorithmState])
+
+  useEffect(() => {
+    if (typeof arraySize !== 'number') return
+    toggleAlgorithm(false)
+    setAlgorithmArray(generateArray(arraySize))
+  }, [arraySize])
+
+  useEffect(() => {
+    speedMultiplierRef.current = speedMultiplier
+  }, [speedMultiplier])
 
   function getAlgorithmState() {
     return algorithmStateRef.current
+  }
+
+  function getSpeedMultiplier() {
+    return speedMultiplierRef.current
   }
 
   function toggleAlgorithm(state?: boolean) {
@@ -57,11 +73,17 @@ export default function Visualizer() {
     setAlgorithmArray(generateArray(arraySize))
   }
 
-  useEffect(() => {
-    if (typeof arraySize !== 'number') return
-    toggleAlgorithm(false)
-    setAlgorithmArray(generateArray(arraySize))
-  }, [arraySize])
+  function setValue(value: number | string, min: number, max: number, setter: (value: number) => void) {
+    const newValue = typeof value === 'number' ? value : parseFloat(value)
+
+    if (newValue <= min) {
+      setter(min);
+    } else if (newValue >= max) {
+      setter(max);
+    } else {
+      setter(newValue);
+    }
+  }
 
   return (
     <div className="grid grid-cols-2 gap-4 px-4 pb-12 mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -78,10 +100,20 @@ export default function Visualizer() {
           <div>
             <button onClick={() => toggleAlgorithm()} className="mr-2">{algorithmState ? "Pause" : "Play"}</button>
             <button onClick={() => resetAlgorithm()}>Reset</button>
-            {/* <input type="number" min={0} max={10} value='1'/> */}
             <div className="flex items-center gap-3 mt-4">
-              <input type="range" min="10" max="1000" value={arraySize} onChange={e => setArraySize(parseInt(e.target.value))}/>
-              <input type="number" min="10" max="1000" value={arraySize} onChange={e => setArraySize(parseInt(e.target.value))}/>
+              <input type="range" min="0" max="100" value={speedMultiplier} onChange={e => setValue(e.target.value, 0, 100, setSpeedMultiplier)} />
+              <input type="number" min="0" max="100" value={speedMultiplier} onChange={e => setValue(e.target.value, 0, 100, setSpeedMultiplier)} />
+              <p>Speed: {speedMultiplier}%</p>
+            </div>
+            <div className="flex items-center gap-3 mt-4">
+              <input type="range" min="10" max="1000" value={arraySize} onChange={e => setValue(e.target.value, 10, 1000, setArraySize)} />
+              <input
+                type="number" 
+                min="10" 
+                max="1000" 
+                value={arraySize} 
+                onChange={e => setValue(e.target.value, 10, 1000, setArraySize)}
+              />
               <p>Size: {arraySize} Elements</p>
             </div>
           </div>
