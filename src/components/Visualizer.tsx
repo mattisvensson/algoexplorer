@@ -16,9 +16,9 @@ export default function Visualizer() {
   const { algorithmType } = useParams()
   const [algorithmArray, setAlgorithmArray] = useState<number[]>()
   const [currentAlgorithm, setCurrentAlgorithm] = useState<SubnavigationItem>()
-  const [isAlgorithmRunning, SetIsAlgorithmRunning] = useState<boolean>(false)
+  const [algorithmState, setAlgorithmState] = useState<boolean>(false)
   const [arraySize, setArraySize] = useState<number>(50)
-  const isAlgorithmRunningRef = useRef(false)
+  const algorithmStateRef = useRef(false)
 
   useEffect(() => {
     setAlgorithmArray(generateArray(arraySize))
@@ -37,19 +37,19 @@ export default function Visualizer() {
   }, [algorithmType])
 
   useEffect(() => {
-    if (!algorithmType || !algorithmArray || !isAlgorithmRunning) return
-    sorting(algorithmType, algorithmArray, setAlgorithmArray, getIsAlgorithmRunning)
+    algorithmStateRef.current = algorithmState
+    if (!algorithmType || !algorithmArray || !algorithmState) return
+    sorting(algorithmType, algorithmArray, setAlgorithmArray, setAlgorithmState, getAlgorithmState)
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAlgorithmRunning])
+  }, [algorithmState])
 
-  function getIsAlgorithmRunning() {
-    return isAlgorithmRunningRef.current
+  function getAlgorithmState() {
+    return algorithmStateRef.current
   }
 
   function toggleAlgorithm(state?: boolean) {
-    SetIsAlgorithmRunning(prev => state != undefined ? state : !prev)
-    isAlgorithmRunningRef.current = state != undefined ? state : !isAlgorithmRunningRef.current
+    setAlgorithmState(prev => state != undefined ? state : !prev)
   }
 
   function resetAlgorithm() {
@@ -76,7 +76,7 @@ export default function Visualizer() {
         <>
           <h3 className='mb-1 font-bold'>Settings</h3>
           <div>
-            <button onClick={() => toggleAlgorithm()} className="mr-2">{isAlgorithmRunning ? "Pause" : "Play"}</button>
+            <button onClick={() => toggleAlgorithm()} className="mr-2">{algorithmState ? "Pause" : "Play"}</button>
             <button onClick={() => resetAlgorithm()}>Reset</button>
             {/* <input type="number" min={0} max={10} value='1'/> */}
             <div className="flex items-center gap-3 mt-4">

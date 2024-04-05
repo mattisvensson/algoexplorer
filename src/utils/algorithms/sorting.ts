@@ -1,10 +1,10 @@
-export default async function sorting(type: string, array: number[], setArray: (newArray: number[]) => void, isAlgorithmRunning: () => boolean): Promise<void> {
+export default async function sorting(type: string, array: number[], setArray: (newArray: number[]) => void, setAlgorithmState: (state: boolean) => void, getAlgorithmState: () => boolean): Promise<void> {
   if (type === 'bubble-sort') {
     outerLoop:
     for (let i = 0; i < array.length; i++) {
       for (let j = 0; j < (array.length - i - 1); j++) {
         await new Promise(r => setTimeout(r, 50));
-        if (!isAlgorithmRunning()) {
+        if (!getAlgorithmState()) {
           break outerLoop;
         }
         if (array[j] > array[j + 1]) {
@@ -15,6 +15,7 @@ export default async function sorting(type: string, array: number[], setArray: (
         }
       }
     }
+    setAlgorithmState(false)
   } else if (type === 'selection-sort') {
     outerLoop:
     for (let i = 0; i < array.length; i++) {
@@ -26,20 +27,21 @@ export default async function sorting(type: string, array: number[], setArray: (
       }
       if (lowest !== i) {
         await new Promise(r => setTimeout(r, 50));
-        if (!isAlgorithmRunning()) {
+        if (!getAlgorithmState()) {
           break outerLoop;
         }
         [array[i], array[lowest]] = [array[lowest], array[i]]
         setArray([...array])
       }
     }
+    setAlgorithmState(false)
   } else if (type === 'insertion-sort') {
     outerLoop:
     for (let i = 1; i < array.length; i++) {
       const currentValue = array[i]
       let j
       await new Promise(r => setTimeout(r, 50));
-      if (!isAlgorithmRunning()) {
+      if (!getAlgorithmState()) {
         break outerLoop;
       }
       for (j = i - 1; j >= 0 && array[j] > currentValue; j--) {
