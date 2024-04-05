@@ -86,8 +86,8 @@ export default function Visualizer() {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4 px-4 pb-12 mx-auto max-w-7xl sm:px-6 lg:px-8">
-      <Container additionalClasses='col-span-2'>
+    <div className="grid grid-cols-1 gap-4 px-4 pb-12 mx-auto md:grid-cols-2 max-w-7xl sm:px-6 lg:px-8">
+      <Container additionalClasses='md:col-span-2'>
         <div className="flex items-end h-[300px]">
           {algorithmArray && algorithmArray.map((item) => (
             <div key={item} style={{ height: item / 100 * (100 / (algorithmArray.length / 100)) + '%' }} className="w-full bg-gray-800 first:rounded-l last:rounded-r"></div>
