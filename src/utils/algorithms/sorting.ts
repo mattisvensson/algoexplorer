@@ -55,5 +55,42 @@ export default async function sorting(type: string, array: number[], getSpeedMul
       array[j + 1] = currentValue
       setArray([...array])
     }
+    setAlgorithmState(false)
+  } else if (type === 'merge-sort') {
+    //merge sort
+  } else if (type === 'quick-sort') {
+    quickSort(array, 0, array.length - 1)
+    // setAlgorithmState(false)
+  }
+
+  async function quickSort(array: number[], start: number, end: number) {
+    if (start === undefined) {
+      start = 0
+      end = array.length - 1
+    } else if (start >= end) {
+      return array
+    }
+    const rStart = start
+    const rEnd = end
+    const pivot = array[Math.floor(Math.random() * (end - start + 1) + start)]
+
+    while (start < end) {
+      while (array[start] <= pivot) start++
+      while (array[end] > pivot) end--
+
+      await Timeout();
+      if (!getAlgorithmState()) {
+        break
+      }
+
+      if (start < end) {
+        const temp = array[start]
+        array[start] = array[end]
+        array[end] = temp
+        setArray([...array])
+      }
+    }
+    quickSort(array, rStart, start - 1)
+    quickSort(array, start, rEnd)
   }
 }
