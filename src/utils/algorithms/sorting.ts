@@ -59,8 +59,8 @@ export default async function sorting(type: string, array: number[], getSpeedMul
   } else if (type === 'merge-sort') {
     //merge sort
   } else if (type === 'quick-sort') {
-    quickSort(array, 0, array.length - 1)
-    // setAlgorithmState(false)
+    await quickSort(array, 0, array.length - 1)
+    setAlgorithmState(false)
   }
 
   async function quickSort(array: number[], start: number, end: number) {
@@ -78,7 +78,7 @@ export default async function sorting(type: string, array: number[], getSpeedMul
       while (array[start] <= pivot) start++
       while (array[end] > pivot) end--
 
-      await Timeout();
+      await Timeout()
       if (!getAlgorithmState()) {
         break
       }
@@ -90,7 +90,10 @@ export default async function sorting(type: string, array: number[], getSpeedMul
         setArray([...array])
       }
     }
-    quickSort(array, rStart, start - 1)
-    quickSort(array, start, rEnd)
+    
+    await Promise.all([
+      quickSort(array, rStart, start - 1),
+      quickSort(array, start, rEnd)
+    ]);
   }
 }
