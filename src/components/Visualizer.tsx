@@ -18,7 +18,7 @@ export default function Visualizer() {
   const [currentAlgorithm, setCurrentAlgorithm] = useState<SubnavigationItem>()
   const [algorithmState, setAlgorithmState] = useState<boolean>(false)
   const [arraySize, setArraySize] = useState<number>(50)
-  const [speedMultiplier, setSpeedMultiplier] = useState<number>(1);
+  const [speedMultiplier, setSpeedMultiplier] = useState<number>(50);
   const algorithmStateRef = useRef(false)
   const speedMultiplierRef = useRef(1)
 
