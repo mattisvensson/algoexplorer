@@ -23,6 +23,7 @@ export default function Visualizer() {
   const speedMultiplierRef = useRef(1)
 
   useEffect(() => {
+    setAlgorithmState(false)
     setAlgorithmArray(generateArray(arraySize))
 
     if (!algorithmType) return
