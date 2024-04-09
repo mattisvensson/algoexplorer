@@ -96,24 +96,30 @@ export default function Visualizer() {
       </Container>
       <Container>
         <>
-          <h3 className='mb-1 font-bold'>Settings</h3>
+          <h2 className='mb-1 font-bold'>Settings</h2>
           <div>
             <button onClick={() => toggleAlgorithm()} className="mr-2">{algorithmState ? "Pause" : "Play"}</button>
             <button onClick={() => resetAlgorithm()}>Reset</button>
             <div className="flex items-center gap-3 mt-4">
-              <input type="range" min="0" max="100" value={speedMultiplier} onChange={e => setValue(e.target.value, 0, 100, setSpeedMultiplier)} />
-              <input type="number" min="0" max="100" value={speedMultiplier} onChange={e => setValue(e.target.value, 0, 100, setSpeedMultiplier)} />
+              <label className='contents'>
+                <p className='sr-only'>Algorithm speed</p>
+                <input type="range" min="0" max="100" value={speedMultiplier} onChange={e => setValue(e.target.value, 0, 100, setSpeedMultiplier)} />
+                <input type="number" min="0" max="100" value={speedMultiplier} onChange={e => setValue(e.target.value, 0, 100, setSpeedMultiplier)} />
+              </label>
               <p>Speed: {speedMultiplier}%</p>
             </div>
             <div className="flex items-center gap-3 mt-4">
-              <input type="range" min="10" max="1000" value={arraySize} onChange={e => setValue(e.target.value, 10, 1000, setArraySize)} />
-              <input
-                type="number" 
-                min="10" 
-                max="1000" 
-                value={arraySize} 
-                onChange={e => setValue(e.target.value, 10, 1000, setArraySize)}
-              />
+              <label className='contents'>
+                <p className='sr-only'>Amount of elements</p>
+                <input type="range" min="10" max="1000" value={arraySize} onChange={e => setValue(e.target.value, 10, 1000, setArraySize)} />
+                <input
+                  type="number" 
+                  min="10" 
+                  max="1000" 
+                  value={arraySize} 
+                  onChange={e => setValue(e.target.value, 10, 1000, setArraySize)}
+                />
+              </label>
               <p>Size: {arraySize} Elements</p>
             </div>
           </div>
@@ -121,7 +127,7 @@ export default function Visualizer() {
       </Container>
       <Container>
         <>
-          <h3 className='mb-1 font-bold'>Description</h3>
+          <h2 className='mb-1 font-bold'>Description</h2>
           {currentAlgorithm?.description && <p>{currentAlgorithm?.description}</p>}
         </>
       </Container>
