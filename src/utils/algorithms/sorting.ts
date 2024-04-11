@@ -61,6 +61,10 @@ export default async function sorting(type: string, array: number[], getSpeedMul
   } else if (type === 'quick-sort') {
     await quickSort(array, 0, array.length - 1)
     setAlgorithmState(false)
+  } else if (type === 'heap-sort') {
+    // console.log(array)
+    heapSort(array)
+    // setAlgorithmState(false)
   }
 
   async function quickSort(array: number[], start: number, end: number) {
@@ -95,5 +99,59 @@ export default async function sorting(type: string, array: number[], getSpeedMul
       quickSort(array, rStart, start - 1),
       quickSort(array, start, rEnd)
     ]);
+  }
+
+  async function heapSort(array: number[]) {
+    // console.log(array)
+    // Build max heap
+    for (let i = Math.floor(array.length / 2) - 1; i >= 0; i--) {
+        await heapify(array, array.length, i);
+    }
+
+    // Heap sort
+    for (let i = array.length - 1; i > 0; i--) {
+      // Move current root to end
+      [array[0], array[i]] = [array[i], array[0]];
+
+      await Timeout();
+      if (!getAlgorithmState()) {
+        return;
+      }
+      // Heapify the reduced heap
+      await heapify(array, i, 0);
+      // setArray([...array]); // Assuming setArray and getAlgorithmState are defined elsewhere
+    }
+
+    setArray([...array]);
+  }
+
+  async function heapify(array: number[], n: number, i: number) {
+    let largest = i;
+    const left = 2 * i + 1;
+    const right = 2 * i + 2;
+
+    // If left child is larger than root
+    if (left < n && array[left] > array[largest]) {
+        largest = left;
+    }
+
+    // If right child is larger than largest so far
+    if (right < n && array[right] > array[largest]) {
+        largest = right;
+    }
+
+    // If largest is not root
+    if (largest !== i) {
+        [array[i], array[largest]] = [array[largest], array[i]];
+
+        if (!getAlgorithmState()) {
+            return;
+        }
+
+        setArray([...array]);
+
+        // Recursively heapify the affected sub-tree
+        await heapify(array, n, largest);
+    }
   }
 }
