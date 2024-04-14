@@ -1,7 +1,7 @@
 interface NavigationItem {
   name: string;
   href: string;
-  submenu?: SubnavigationItem[]; // Optional submenu property for nested navigation items
+  submenu?: SubnavigationItem[];
 }
 
 interface SubnavigationItem {

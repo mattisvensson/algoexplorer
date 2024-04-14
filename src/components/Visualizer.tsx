@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { algorithmInfo } from '@utils/algorithms/algorithmInfo'
 import sorting from '@utils/algorithms/sorting'
@@ -14,17 +14,23 @@ function Container({ additionalClasses, children }: { additionalClasses?: string
 
 export default function Visualizer() {
   const { algorithmType } = useParams()
-  const [algorithmArray, setAlgorithmArray] = useState<number[]>()
   const [currentAlgorithm, setCurrentAlgorithm] = useState<SubnavigationItem>()
-  const [algorithmState, setAlgorithmState] = useState<boolean>(false)
+  const [animationState, setAnimationState] = useState<boolean>(false)
   const [arraySize, setArraySize] = useState<number>(50)
   const [speedMultiplier, setSpeedMultiplier] = useState<number>(50);
-  const algorithmStateRef = useRef(false)
-  const speedMultiplierRef = useRef(1)
+  const [steps, setSteps] = useState<number[][]>([]);
+  const [currentStep, setCurrentStep] = useState<number>(0)
+  const [isFinished, setIsFinished] = useState<boolean>(false)
+
+  const resetAnimation = useCallback(() => {
+    setCurrentStep(0)
+    setAnimationState(false)
+    const array = generateArray(arraySize)
+    setSteps([array])
+  }, [arraySize]);
 
   useEffect(() => {
-    setAlgorithmState(false)
-    setAlgorithmArray(generateArray(arraySize))
+    resetAnimation()
 
     if (!algorithmType) return
 
@@ -35,43 +41,64 @@ export default function Visualizer() {
         }
       })
     })
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [algorithmType])
-
-  useEffect(() => {
-    algorithmStateRef.current = algorithmState
-    if (!algorithmType || !algorithmArray || !algorithmState) return
-    sorting(algorithmType, algorithmArray, getSpeedMultiplier, setAlgorithmArray, setAlgorithmState, getAlgorithmState)
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [algorithmState])
+  }, [algorithmType, resetAnimation])
 
   useEffect(() => {
     if (typeof arraySize !== 'number') return
-    toggleAlgorithm(false)
-    setAlgorithmArray(generateArray(arraySize))
-  }, [arraySize])
+    resetAnimation()
+  }, [arraySize, resetAnimation])
 
   useEffect(() => {
-    speedMultiplierRef.current = speedMultiplier
-  }, [speedMultiplier])
+    let timeoutId: NodeJS.Timeout;
+    
+    const tick = () => {
+      setCurrentStep(prevStep => {
+        if (steps.length - 1 === 0) return 0
+        if (prevStep < steps.length - 1) {
+          return prevStep + 1
+        } else if (prevStep === steps.length - 1) {
+          setAnimationState(false)
+          setIsFinished(true)
+          clearTimeout(timeoutId)
+          return prevStep
+        } else {
+          return prevStep
+        }
+      })
+    }
+  
+    function run() {
+      if (!animationState) return
+      tick()
+      timeoutId = setTimeout(run, 1 * (100 - speedMultiplier))
+    }
+  
+    if (animationState) {
+      run()
+    }
+  
+    return () => clearTimeout(timeoutId)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [steps, animationState, speedMultiplier]);
+  
 
-  function getAlgorithmState() {
-    return algorithmStateRef.current
-  }
+  useEffect(() => {
+    if (!animationState || !algorithmType || steps.length > 1) return
 
-  function getSpeedMultiplier() {
-    return speedMultiplierRef.current
-  }
+    const sort = async () => {
+      const array = await sorting(algorithmType, steps[0]) || []
+      setSteps(array)
+    }
+    sort()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationState])
 
-  function toggleAlgorithm(state?: boolean) {
-    setAlgorithmState(prev => state != undefined ? state : !prev)
-  }
-
-  function resetAlgorithm() {
-    toggleAlgorithm(false)
-    setAlgorithmArray(generateArray(arraySize))
+  function toggleAnimation() {
+    if (isFinished) {
+      setCurrentStep(0) 
+      setIsFinished(false) 
+    }
+    setAnimationState(prev => !prev)
   }
 
   function setValue(value: number | string, min: number, max: number, setter: (value: number) => void) {
@@ -90,8 +117,8 @@ export default function Visualizer() {
     <div className="grid grid-cols-1 gap-4 px-4 pb-12 mx-auto md:grid-cols-2 max-w-7xl sm:px-6 lg:px-8">
       <Container additionalClasses='md:col-span-2'>
         <div className="flex items-end h-[300px]">
-          {algorithmArray && algorithmArray.map((item) => (
-            <div key={item} style={{ height: item / 100 * (100 / (algorithmArray.length / 100)) + '%' }} className="w-full bg-gray-800 first:rounded-l last:rounded-r"></div>
+          {steps.length > 0 && steps[currentStep].map((item) => (
+            <div key={item} style={{ height: item / 100 * (100 / (steps[currentStep].length / 100)) + '%' }} className="w-full bg-gray-800 first:rounded-l last:rounded-r"></div>
           ))}
         </div>
       </Container>
@@ -99,8 +126,8 @@ export default function Visualizer() {
         <>
           <h2 className='mb-1 font-bold'>Settings</h2>
           <div>
-            <button onClick={() => toggleAlgorithm()} className="mr-2">{algorithmState ? "Pause" : "Play"}</button>
-            <button onClick={() => resetAlgorithm()}>Reset</button>
+            <button onClick={() => toggleAnimation()} className="mr-2">{animationState ? "Pause" : "Play"}</button>
+            <button onClick={() => resetAnimation()}>Reset</button>
             <div className="flex items-center gap-3 mt-4">
               <label className='contents'>
                 <p className='sr-only'>Algorithm speed</p>
