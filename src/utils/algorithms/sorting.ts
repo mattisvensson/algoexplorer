@@ -1,6 +1,17 @@
 export default async function sorting(type: string, array: number[]): Promise<number[][]> {
 
   const fullArray: number[][] = []
+
+  let mergeSortTemp = [...array]
+
+  function findFirstIndex(a: number[], b: number[]) {
+    for (let i = 0; i < b.length; i++) {
+      if (a.includes(b[i])) {
+        return i;
+      }
+    }
+    return -1;
+  }
   
   if (type === 'bubble-sort') {
     for (let i = 0; i < array.length; i++) {
@@ -43,7 +54,7 @@ export default async function sorting(type: string, array: number[]): Promise<nu
       fullArray.push(copy)
     }
   } else if (type === 'merge-sort') {
-    //merge sort
+    mergeSort(array, [])
   } else if (type === 'quick-sort') {
     quickSort(array, 0, array.length - 1)
   } else if (type === 'heap-sort') {
@@ -74,7 +85,7 @@ export default async function sorting(type: string, array: number[]): Promise<nu
         fullArray.push(copy)
       }
     }
-    
+
     await Promise.all([
       quickSort(array, rStart, start - 1),
       quickSort(array, start, rEnd)
@@ -83,7 +94,7 @@ export default async function sorting(type: string, array: number[]): Promise<nu
 
   async function heapSort(array: number[]) {
     for (let i = Math.floor(array.length / 2) - 1; i >= 0; i--) {
-        await heapify(array, array.length, i);
+      await heapify(array, array.length, i);
     }
 
     for (let i = array.length - 1; i > 0; i--) {
@@ -109,13 +120,46 @@ export default async function sorting(type: string, array: number[]): Promise<nu
     if (right < n && array[right] > array[largest]) largest = right
 
     if (largest !== i) {
-        [array[i], array[largest]] = [array[largest], array[i]];
+      [array[i], array[largest]] = [array[largest], array[i]];
 
-        const arrayCopy = structuredClone(array)
-        fullArray.push(arrayCopy)
+      const arrayCopy = structuredClone(array)
+      fullArray.push(arrayCopy)
 
-        await heapify(array, n, largest)
+      await heapify(array, n, largest)
     }
+  }
+
+  async function mergeSort(newArray: number[], tempArray: number[][]) {
+    if (newArray.length < 2) {
+      return newArray;
+    }
+  
+    const mid = Math.floor(newArray.length / 2);
+    const left = newArray.slice(0, mid);
+    const right = newArray.slice(mid);
+  
+    const sortedLeft = await mergeSort(left, tempArray);
+    const sortedRight = await mergeSort(right, tempArray);
+  
+    const sortedArray = merge(sortedLeft, sortedRight);
+    
+    const start = findFirstIndex(sortedArray, array);
+    const end = start + sortedArray.length;
+    const arrayCopy = structuredClone(mergeSortTemp)
+    arrayCopy.splice(start, end - start, ...sortedArray);
+    mergeSortTemp = arrayCopy
+    fullArray.push(arrayCopy);
+
+    return sortedArray;
+  }
+  
+  function merge(left: number[], right: number[]): number[] {
+    const sorted: number[] = [];
+    while (left.length && right.length) {
+      if (left[0] < right[0]) sorted.push(left.shift()!);
+      else sorted.push(right.shift()!);
+    }
+    return sorted.concat(left.slice().concat(right.slice()));
   }
 
   return fullArray
