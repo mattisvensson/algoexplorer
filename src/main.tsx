@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import './styles/main.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <BrowserRouter>
+  <BrowserRouter basename="/algoexplorer">
     <App />
   </BrowserRouter>
 )
